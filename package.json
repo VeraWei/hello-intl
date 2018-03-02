@@ -1,0 +1,27 @@
+{
+  "name": "hello-intl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VeraWei/hello-intl.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VeraWei/hello-intl/issues"
+  },
+  "homepage": "https://github.com/VeraWei/hello-intl#readme",
+  "devDependencies": {
+    "babel-register": "^6.26.0"
+  },
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1"
+  }
+}
