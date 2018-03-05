@@ -1,51 +1,47 @@
-/*
-import * as babylon from "babylon";
-import traverse from "babel-traverse";
-import * as t from "babel-types";
-import generate from "babel-generator";
-
-const code = `function square(n) {
-    return n * n;
-}`;
-
-const ast = babylon.parse(code);
-/*
-traverse(ast, {
-  enter(path) {
-    if (
-      path.node.type === "Identifier" &&
-      path.node.name === "n"
-    ) {
-      path.node.name = "x";
-    }
-  }
-});
-*/
-
 require("babel-register")({
   "presets": [
     "env",
-    "stage-0"
+    "stage-0",
   ]
 });
 var plugin = require("./main").default;
 var babel = require("babel-core");
+var fs = require("fs");
+var glob = require("glob");
 
-const result = babel.transform("xxxx===yyyy", {
-  plugins: [plugin]
-});
+var stringNodes = [];
 
-console.log(result);
-/*
-traverse(ast, {
-  enter(path) {
-    if(t.isIdentifier(path.node, {name: "n"})) {
-      path.node.name = "x";
-    }
-  }
-});
+glob("app/**/*.js", {}, function(err, files){
+  files.map(function(file){
+    readFile(file);
+  })
+})
 
-generate(ast, null, code)
+function readFile (file) {
+  fs.readFile(file, "utf8", function(error, bytesRead){
+    if (error) throw error;
+    const result = babel.transform(bytesRead, {
+      plugins: [
+        'syntax-jsx',
+        [plugin, {stringNodes: {
+          push: function(item){
+            // 去重处理
+            if (stringNodes.indexOf(item) < 0) {
+              stringNodes.push(item);
+            }
+          }
+      }}]]
+    });
+    const resultNode = '{\n  "": "'+stringNodes.join('",\n  "": "')+' "\n}'
+    writeFile(resultNode);
+  })
+}
 
-console.log(ast);
-*/
+function writeFile(result) {
+  fs.writeFile('zh.js', result, function(error){
+    if(error) throw error;
+    console.log('写入成功');
+  });
+}
+
+//readFile(file);

@@ -1,13 +1,15 @@
 export default function ({types: t}) {
   return {
     visitor: {
-      BinaryExpression(path) {
-        if (path.node.operator !== "===") {
-          return;
+      StringLiteral(path, state) {
+        if(/[\u4e00-\u9fa5]/.test(path.node.value)) {
+          state.opts.stringNodes.push(path.node.value);
         }
-
-        path.node.left = t.identifier("semack");
-        path.node.right = t.identifier("dork");
+      },
+      JSXText(path, state){
+        if(/[\u4e00-\u9fa5]/.test(path.node.value)) {
+          state.opts.stringNodes.push(path.node.value);
+        }
       }
     }
   }
