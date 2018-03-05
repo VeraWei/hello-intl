@@ -11,11 +11,18 @@ var glob = require("glob");
 
 var stringNodes = [];
 
-glob("app/**/*.js", {}, function(err, files){
+glob("*(app|src)/*(components|view|layout|page|service|constant)/**/*.js", {}, function(err, files){
   files.map(function(file){
     readFile(file);
   })
 })
+
+glob("*(app|src)/*.js", {}, function(err, files){
+  files.map(function(file){
+    readFile(file);
+  })
+})
+
 
 function readFile (file) {
   fs.readFile(file, "utf8", function(error, bytesRead){
@@ -23,22 +30,22 @@ function readFile (file) {
     const result = babel.transform(bytesRead, {
       plugins: [
         'syntax-jsx',
+        "transform-object-rest-spread",
+        "transform-function-bind",
+        "transform-class-properties",
         [plugin, {stringNodes: {
             push: function(item){
               // 去重处理
               if (stringNodes.indexOf(item) < 0) {
-                stringNodes.push(item);
+                console.log('item', item)
+                stringNodes.push(item.trim());
               }
             }
           }, file}]]
     });
 
-    fs.exists('zh.js', function(exists) {
-        if (!exists) {
-            const resultNode = 'export default {\n  "": "'+stringNodes.join('",\n  "": "')+'"\n}'
-            writeFile('zh.js', resultNode);
-        }
-    })
+    const resultNode = 'export default {\n  "": "'+stringNodes.join('",\n  "": "')+'"\n}'
+    writeFile('zh.js', resultNode);
   })
 }
 

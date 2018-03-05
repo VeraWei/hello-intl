@@ -4,7 +4,6 @@ export default function () {
   return {
     visitor: {
       StringLiteral(path, state) {
-        console.log('file', state.opts.file);
         basic(path, state);
       },
       JSXText(path, state){
