@@ -34,14 +34,24 @@ function readFile (file) {
     });
     const resultNode = '{\n  "": "'+stringNodes.join('",\n  "": "')+' "\n}'
     writeFile(resultNode);
+
+    fs.exists('zh.js', function(exists) {
+        if (!exists) {
+            copyFile('result.js', 'zh.js');
+        }
+    })
   })
 }
 
 function writeFile(result) {
-  fs.writeFile('zh.js', result, function(error){
+  fs.writeFile('result.js', result, function(error){
     if(error) throw error;
     console.log('写入成功');
   });
+}
+
+function copyFile(source, target) {
+    fs.createReadStream(source).pipe(fs.createWriteStream(target));
 }
 
 //readFile(file);
