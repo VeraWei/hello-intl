@@ -3,7 +3,7 @@ import { Form, Field, Input, Balloon, Icon } from '@bone/bone-web-ui';
 import ItemPreviewSelect from '../Commons/ItemPreviewSelect';
 import Dialog from '@boneweb/iot-dialog';
 import { connect } from 'react-redux';
-import {DataViewActions as Actions} from '../../actions/DataViewActions';
+import { DataViewActions as Actions } from '../../actions/DataViewActions';
 import { checkViewName } from './RegCheckUtils';
 
 const KEY_SOURCE_NAME = 'sourceName';
@@ -21,12 +21,9 @@ class CreateViewDialog extends React.Component {
   }
 
   render() {
-    return (<Dialog visible={this.props.isShowCreateViewDialog} title={'添加/管理'}
-                    onCancel={this.onClose.bind(this)}
-                    onClose={this.onClose.bind(this)}
-                    onOk={this.onOk.bind(this)} locale={{ok:'下一步'}}>
+    return <Dialog visible={this.props.isShowCreateViewDialog} title={I18n.get("add.manage")} onCancel={this.onClose.bind(this)} onClose={this.onClose.bind(this)} onOk={this.onOk.bind(this)} locale={{ ok: I18n.get("next.step") }}>
       {this.renderForm()}
-    </Dialog>)
+    </Dialog>;
   }
 
   onClose() {
@@ -36,10 +33,10 @@ class CreateViewDialog extends React.Component {
   }
 
   onOk() {
-    this.field.validate((errors)=> {
+    this.field.validate(errors => {
       if (!errors) {
         let sourceName = this.field.getValue(KEY_SOURCE_NAME);
-        const items = this.props.bizModelList[this.props.env].filter((item)=> {
+        const items = this.props.bizModelList[this.props.env].filter(item => {
           let sourceTableName = item.desc && item.desc.length > 0 ? item.genEnName + '(' + item.desc + ')' : item.genEnName;
           return sourceName === sourceTableName;
         });
@@ -50,11 +47,11 @@ class CreateViewDialog extends React.Component {
             type: 'view',
             version: 1,
             name: this.field.getValue(KEY_NAME).trim(),
-            desc: desc ? desc.trim() : '',//NOTICE: 'desc' must exist, can be empty string.
+            desc: desc ? desc.trim() : '', //NOTICE: 'desc' must exist, can be empty string.
             structedView: JSON.stringify({
-              primaryTableId:items[0].id,
-              primaryTableType:items[0].type,
-              primaryTableName:items[0].genEnName
+              primaryTableId: items[0].id,
+              primaryTableType: items[0].type,
+              primaryTableName: items[0].genEnName
             })
           }
         });
@@ -78,54 +75,31 @@ class CreateViewDialog extends React.Component {
     const bizModeOptions = this.props.bizModelList[this.props.env];
 
     return <div>
-      <div style={{margin: '0 20px'}}>
+      <div style={{ margin: '0 20px' }}>
         <Form field={this.field}>
-          <Form.Item
-            label="视图名称："
-            {...formItemLayout}
-            required>
-            <Input placeholder="请输入视图名称，不超过20个字符。" style={{width: 280}}
-                   {...init(KEY_NAME, {
-                     rules: [
-                        { validator: checkViewName }
-                     ]
-                   }) } />
-            <Tooltip
-                trigger={<Icon size='small' className='theme-color' style={{ marginLeft: 8 }} type='yiwen' />}
-                align="t"
-                text='支持中文、英文大小写、数字和下划线，不超过20个字符。'
-            />
+          <Form.Item label={I18n.get("view.name")} {...formItemLayout} required>
+            <Input placeholder={I18n.get("view.name.placeholder")} style={{ width: 280 }} {...init(KEY_NAME, {
+              rules: [{ validator: checkViewName }]
+            })} />
+            <Tooltip trigger={<Icon size="small" className="theme-color" style={{ marginLeft: 8 }} type="yiwen" />} align="t" text={I18n.get("view.name.rule")} />
           </Form.Item>
-          <Form.Item label="数据源：" {...formItemLayout} required style={{margin: 0}}>
-            <ItemPreviewSelect style={{width: 280}} placeholder="请选择数据源" dataSource={bizModeOptions} {...init(KEY_SOURCE_NAME,
-                  {rules: [{ required: true, message: '数据源不能为空。' }]})
-                } onSelect={(item)=> {
-                  let selectedTableName = item.desc && item.desc.length > 0 ? item.genEnName + '(' + item.desc + ')' : item.genEnName;
-                  this.field.setValue(KEY_SOURCE_NAME, selectedTableName);
-                  this.field.validate(KEY_SOURCE_NAME);
-              }}/>
+          <Form.Item label={I18n.get("data.source")} {...formItemLayout} required style={{ margin: 0 }}>
+            <ItemPreviewSelect style={{ width: 280 }} placeholder={I18n.get("data.source.placeholder")} dataSource={bizModeOptions} {...init(KEY_SOURCE_NAME, { rules: [{ required: true, message: I18n.get("data.source.rule") }] })} onSelect={item => {
+              let selectedTableName = item.desc && item.desc.length > 0 ? item.genEnName + '(' + item.desc + ')' : item.genEnName;
+              this.field.setValue(KEY_SOURCE_NAME, selectedTableName);
+              this.field.validate(KEY_SOURCE_NAME);
+            }} />
           </Form.Item>
-          <Form.Item
-            label="视图描述："
-            {...formItemLayout}
-            style={{marginTop: '16px'}}
-          >
-            <Input placeholder="请输入视图描述"
-                   style={{width: 280}}
-                   cutString={false}
-                   maxLength={200}
-                   multiple
-                   hasLimitHint
-                   {...init(KEY_DESC, {
-                     rules: [
-                       // { validator: checkGenDesc }
-                       {max:200, message: '视图描述不能超过200字符'}
-                     ]
-                   }) } />
+          <Form.Item label={I18n.get("view.description")} {...formItemLayout} style={{ marginTop: '16px' }}>
+            <Input placeholder={I18n.get("view.description.placeholder")} style={{ width: 280 }} cutString={false} maxLength={200} multiple hasLimitHint {...init(KEY_DESC, {
+              rules: [
+              // { validator: checkGenDesc }
+              { max: 200, message: I18n.get("view.description.rule") }]
+            })} />
           </Form.Item>
         </Form>
       </div>
-    </div>
+    </div>;
   }
 }
 
@@ -134,6 +108,6 @@ function mapStateToProps(state) {
     isShowCreateViewDialog: state.dataview.dataviews.isShowCreateViewDialog,
     bizModelList: state.dataview.dataviews.bizModelList,
     env: state.dataview.dataviews.env
-  }
+  };
 }
-export default connect(mapStateToProps, Actions)(CreateViewDialog)
+export default connect(mapStateToProps, Actions)(CreateViewDialog);

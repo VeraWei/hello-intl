@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "read": "node read.js",
+    "replace": "node replace.js"
+  },
+  "dependencies": {
+    "babel-template": "^6.26.0"
+  }
+}

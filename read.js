@@ -4,7 +4,7 @@ require("babel-register")({
     "stage-0",
   ]
 });
-var plugin = require("./main").default;
+var plugin = require("./read.babel").default;
 var babel = require("babel-core");
 var fs = require("fs");
 var glob = require("glob");
@@ -24,34 +24,29 @@ function readFile (file) {
       plugins: [
         'syntax-jsx',
         [plugin, {stringNodes: {
-          push: function(item){
-            // 去重处理
-            if (stringNodes.indexOf(item) < 0) {
-              stringNodes.push(item);
+            push: function(item){
+              // 去重处理
+              if (stringNodes.indexOf(item) < 0) {
+                stringNodes.push(item);
+              }
             }
-          }
-      }}]]
+          }, file}]]
     });
-    const resultNode = '{\n  "": "'+stringNodes.join('",\n  "": "')+' "\n}'
-    writeFile(resultNode);
 
     fs.exists('zh.js', function(exists) {
         if (!exists) {
-            copyFile('result.js', 'zh.js');
+            const resultNode = 'export default {\n  "": "'+stringNodes.join('",\n  "": "')+'"\n}'
+            writeFile('zh.js', resultNode);
         }
     })
   })
 }
 
-function writeFile(result) {
-  fs.writeFile('result.js', result, function(error){
+var index = 0;
+function writeFile(to, result) {
+  fs.writeFile(to, result, function(error){
     if(error) throw error;
-    console.log('写入成功');
+    console.log(index++, '写入成功');
   });
 }
 
-function copyFile(source, target) {
-    fs.createReadStream(source).pipe(fs.createWriteStream(target));
-}
-
-//readFile(file);
