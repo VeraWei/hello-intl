@@ -30,7 +30,7 @@ function readFile(file) {
         "transform-object-rest-spread",
         "transform-function-bind",
         "transform-class-properties",
-        [plugin, {str}]]
+        [plugin, {str, file}]]
     });
     writeFile(file, result.code);
   })

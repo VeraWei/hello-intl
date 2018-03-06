@@ -1,5 +1,6 @@
 var babelTemplate = require('babel-template');
 var types = require("babel-types");
+var pathModel = require("path");
 export default function () {
   return {
     visitor: {
@@ -10,7 +11,10 @@ export default function () {
         basic(path, state);
       },
       Program(path, state) {
-        path.node.body.unshift('')
+        var str = state.opts.file.split('/')[0] + '/locale/i18n';
+        var i18nStrPath = pathModel.relative(state.opts.file, str);
+        var node = importNode('I18n', i18nStrPath);
+        path.node.body.unshift(node);
       }
     }
   }
@@ -36,4 +40,16 @@ Object.values = function (obj) {
         values.push(obj[pro]);  
     }  
     return values;  
+}
+
+function importNode(arg1, arg2) {
+    return types.ImportDeclaration(
+        [
+            types.ImportSpecifier(
+                types.identifier(arg1),
+                types.identifier(arg1)
+            ),
+        ],
+        types.stringLiteral(arg2)
+    )
 }

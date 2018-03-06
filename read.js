@@ -37,7 +37,6 @@ function readFile (file) {
             push: function(item){
               // 去重处理
               if (stringNodes.indexOf(item.trim()) < 0) {
-                console.log('item', item)
                 stringNodes.push(item.trim());
               }
             }
