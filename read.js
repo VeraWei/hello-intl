@@ -43,8 +43,8 @@ function readFile (file) {
           }, file}]]
     });
 
-    const resultNode = 'export default {\n  "": "'+stringNodes.join('",\n  "": "')+'"\n}'
-    writeFile('zh.js', resultNode);
+    const resultNode = 'export default {\n  "": "'+stringNodes.join('",\n  "": "')+'"\n}';
+    writeFile(file.split('/')[0]+'/locale/zh.js', resultNode);
   })
 }
 

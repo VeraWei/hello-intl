@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "init": "node init.js",
     "read": "node read.js",
     "replace": "node replace.js"
   },
