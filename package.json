@@ -1,4 +1,6 @@
 {
+  "name": "hello-intl",
+  "version": "0.0.1",
   "scripts": {
     "init": "node init.js",
     "read": "node read.js",
